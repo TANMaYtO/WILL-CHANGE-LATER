@@ -7,7 +7,7 @@ from utils import (
     ensure_dir, load_emb, load_faiss_index, load_mapping,
     tokk_search
 )
-from utils import EMBED_MODEL_NAME
+from utils import emb_model_name
 from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 import textwrap
@@ -22,7 +22,7 @@ GEN_MODEL = "google/flan-t5-base"  # change if you want a different generator
 MAX_CONTEXT_CHARS = 4000  # keep total context length in check
 
 @st.cache_resource
-def load_resources(embed_model=EMBED_MODEL_NAME, gen_model_name=GEN_MODEL):
+def load_resources(embed_model=emb_model_name, gen_model_name=GEN_MODEL):
     # Embedding model
     embedder = load_emb(embed_model)
 
@@ -59,7 +59,7 @@ def retrieve(embedder, index, df, query: str, topk: int = DEFAULT_TOPK):
         if idx < 0 or idx >= len(df):
             continue
         row = df.iloc[idx]
-        results.append({"question": row["question"], "answer": row["answer"]})
+        results.append({"question": row["question"], "answer": row["amswer"]})
     return results, D[0]
 
 def build_context(kb_results, max_chars=MAX_CONTEXT_CHARS):
