@@ -33,7 +33,7 @@ def load_faiss_index(path: str) -> faiss.Index:
     return faiss.read_index(path)
 
 def save_mapping(df: pd.DataFrame, path: str):
-    df.to_csv(path, Index= False)
+    df.to_csv(path, index= False)
 
 def load_mapping(path: str) -> pd.DataFrame:
     return pd.read_csv(path)

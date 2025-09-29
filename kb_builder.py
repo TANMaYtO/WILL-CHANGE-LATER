@@ -1,7 +1,7 @@
 import argparse
 from datasets import load_dataset
 import pandas as pd
-from utils import (ensure_dir, load_embedder, emb_texts, build_faiss_index,
+from utils import (ensure_dir, load_emb, embed_texts, build_faiss_index,
                    save_faiss_index, save_mapping, save_pickle)
 import os
 
@@ -43,19 +43,19 @@ def main(args):
     df = prepare_dataframe_from_dataset(args.dataset, args.split, args.max_rows)
     print(f"Prepared dataframe with {len(df)} rows.")
 
-    mapping_path = os.path.jion(outdir, "kb_mapping.csv")
+    mapping_path = os.path.join(outdir, "kb_mapping.csv")
     save_mapping(df, mapping_path)
     print(f"Saved mapping to {mapping_path}")
 
-    embedder = load_embedder(args.embed_model)
+    embedder = load_emb(args.embed_model)
     texts = df["question"].tolist()
     print("Computing embedding (questions) ...")
-    embedding = emb_texts(embedder, texts, batch_size=args.batch_size)
+    embedding = embed_texts(embedder, texts, batch_size=args.batch_size)
     print("Embedding computed.shape:", embedding.shape)
 
     print("Building FAISS index ...")
     index = build_faiss_index(embedding)
-    idx_path = os.path.jion(outdir, "kb.index")
+    idx_path = os.path.join(outdir, "kb.index")
     save_faiss_index(index, idx_path)
     print(f"FAISS index saved to {idx_path}")
     print("Done")
@@ -68,5 +68,5 @@ if __name__ == "__main__":
     parser.add_argument("--outdir", type=str, default=DEFAULT_OUT_DIR, help="output")
     parser.add_argument("--embed_model", type=str, default="all-MiniLM-L6-v2",help="embed model")
     parser.add_argument("--batch_size", type=int, default=64, help="Embedding batch size")
-    args = parser.parse_args
+    args = parser.parse_args()
     main(args)
