@@ -23,4 +23,15 @@ def prepare_dataframe_from_dataset(dataset_name: str, split: str, max_rows: int=
         if 'answers' in row and isinstance(row['answers'], dict):
             texts= row['answers'].get('text', [])
             a = texts[0] if texts else ""
-            
+        elif 'answer' in row and isinstance(row['answer'], str):
+            a = row['answer']
+        elif 'context' in row:
+            a= row['context']
+        else:
+            a= ""
+        if not q:
+            continue
+        rows.append({'question': str(q), 'answer':str(a)})
+    df= pd.DataFrame(rows)
+    return df
+
